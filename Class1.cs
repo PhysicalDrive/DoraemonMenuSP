@@ -278,6 +278,7 @@ namespace DoraemonMenu
             removearmor();
             cloneped();
             abi();
+            gravity();
         }
 
         void SetupWeaponFunctions()
@@ -503,6 +504,30 @@ namespace DoraemonMenu
                     {
                         Game.Player.Character.CanRagdoll = true;
                         noragdoll.Text = "No Ragdoll: " + false.ToString();
+                    }
+                }
+            };
+        }
+
+        bool gravityon = false;
+        void gravity()
+        {
+            UIMenuItem gravity = new UIMenuItem("No Gravity: " + gravityon.ToString());
+            playerMenu.AddItem(gravity);
+
+            playerMenu.OnItemSelect += (sender, item, index) =>
+            {
+                if (item == gravity)
+                {
+                    gravityon = !gravityon;
+
+                    if (gravityon)
+                    {
+                        gravity.Text = "No Gravity: " + true.ToString();
+                    }
+                    else
+                    {
+                        gravity.Text = "No Gravity: " + false.ToString();
                     }
                 }
             };
@@ -983,6 +1008,10 @@ namespace DoraemonMenu
             if (abion)
             {
                 Game.Player.RefillSpecialAbility();
+            }
+            if (gravityon)
+            {
+                Game.Player.Character.HasGravity = false;
             }
         }
 
