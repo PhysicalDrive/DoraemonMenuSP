@@ -275,6 +275,8 @@ namespace DoraemonMenu
             tinyp();
             wet();
             money();
+            removearmor();
+            cloneped();
         }
 
         void SetupWeaponFunctions()
@@ -330,6 +332,21 @@ namespace DoraemonMenu
             };
         }
 
+        void cloneped() // yes yes
+        {
+            UIMenuItem clone = new UIMenuItem("Clone Ped");
+            playerMenu.AddItem(clone);
+
+
+            playerMenu.OnItemSelect += (sender, item, index) =>
+            {
+                if (item == clone)
+                {
+                    Game.Player.Character.Clone();
+                }
+            };
+        }
+
         void money() // wheres mr krabs 
         {
             UIMenuItem money = new UIMenuItem("Get Maximum Money");
@@ -341,6 +358,22 @@ namespace DoraemonMenu
                 if (item == money)
                 {
                     Game.Player.Money = 999999999;
+                }
+            };
+        }
+
+        void removearmor() // idk why you want this but it's fine
+        {
+            UIMenuItem removearmor = new UIMenuItem("Remove Armor");
+            playerMenu.AddItem(removearmor);
+
+
+            playerMenu.OnItemSelect += (sender, item, index) =>
+            {
+                if (item == removearmor)
+                {
+                    Game.Player.Character.Armor = 0;
+                    GTA.UI.Screen.ShowSubtitle("Removed Armor!");
                 }
             };
         }
