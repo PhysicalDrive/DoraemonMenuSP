@@ -277,6 +277,7 @@ namespace DoraemonMenu
             money();
             removearmor();
             cloneped();
+            abi();
         }
 
         void SetupWeaponFunctions()
@@ -502,6 +503,30 @@ namespace DoraemonMenu
                     {
                         Game.Player.Character.CanRagdoll = true;
                         noragdoll.Text = "No Ragdoll: " + false.ToString();
+                    }
+                }
+            };
+        }
+
+        bool abion = false;
+        void abi()
+        {
+            UIMenuItem abi = new UIMenuItem("Unlimited Special Ability: " + abion.ToString());
+            playerMenu.AddItem(abi);
+
+            playerMenu.OnItemSelect += (sender, item, index) =>
+            {
+                if (item == abi)
+                {
+                    abion = !abion;
+
+                    if (abion)
+                    {
+                        abi.Text = "Unlimited Special Ability: " + true.ToString();
+                    }
+                    else
+                    {
+                        abi.Text = "Unlimited Special Ability: " + false.ToString();
                     }
                 }
             };
@@ -954,6 +979,10 @@ namespace DoraemonMenu
             if (superswimon)
             {
                 Game.Player.SetSwimSpeedMultThisFrame((float)1.5);
+            }
+            if (abion)
+            {
+                Game.Player.RefillSpecialAbility();
             }
         }
 
