@@ -340,7 +340,7 @@ namespace DoraemonMenu
             {
                 if (item == money)
                 {
-                    Game.Player.Character.Money = 999999999;
+                    Game.Player.Money = 999999999;
                 }
             };
         }
