@@ -8,8 +8,10 @@ using System.Drawing;
 using GTA;
 using GTA.Native;
 using GTA.Math;
+using DiscordRPC;
 using NativeUI;
 using GTA.UI;
+using System.Runtime.Remoting;
 
 namespace DoraemonMenu
 {
@@ -22,11 +24,32 @@ namespace DoraemonMenu
         UIMenu weaponsMenu;
         UIMenu vehicleMenu;
         UIMenu gameMenu;
+        DiscordRpcClient client;
 
         UIMenuItem resetWantedLevel;
 
         public Class1()
         {
+            client = new DiscordRpcClient("1131678664766009374");
+
+            client.Initialize();
+
+            client.SetPresence(new RichPresence()
+            {
+                Details = "Doraemon Menu for GTA",
+                State = "SP Menu",
+                Assets = new Assets()
+                {
+                    LargeImageKey = "doraemon",
+                    LargeImageText = "Doraemon Menu",
+                    SmallImageKey = "gta",
+                    SmallImageText = "yes yes"
+                },
+                Buttons = new DiscordRPC.Button[]
+                {
+                    new DiscordRPC.Button() { Label = "Download", Url = "https://github.com/NotTacosdev/DoraemonMenuSP" }
+                }
+            });
 
             Setup();
 
@@ -54,6 +77,9 @@ namespace DoraemonMenu
         void SetupGameFunction()
         {
             Savegame();
+            radar();
+            bark();
+            scuba();
         }
 
         void Savegame()
@@ -79,6 +105,10 @@ namespace DoraemonMenu
             RepairVehicle();
             bike();
             car();
+            bypass();
+            seatbelt();
+            vehgodmode();
+            vehautoclean();
         }
 
         void VehicleSelectorMenu()
@@ -151,6 +181,9 @@ namespace DoraemonMenu
             UIMenuItem nicecar = new UIMenuItem("Nice Car");
             submenu.AddItem(nicecar);
 
+            UIMenuItem reloading = new UIMenuItem("Reloading");
+            submenu.AddItem(reloading);
+
             submenu.OnItemSelect += (sender, item, index) =>
             {
                 if (item == hi)
@@ -196,6 +229,10 @@ namespace DoraemonMenu
                 if (item == nicecar)
                 {
                     Game.Player.Character.PlayAmbientSpeech("NICE_CAR");
+                }
+                if (item == reloading)
+                {
+                    Game.Player.Character.PlayAmbientSpeech("RELOADING");
                 }
             };
         }
@@ -258,6 +295,7 @@ namespace DoraemonMenu
             playerMenu.OnItemSelect += onMainMenuItemSelect;
 
             godmode();
+            godmodealt();
             neverwantedlevel();
             superjump();
             FixPlayer();
@@ -279,6 +317,10 @@ namespace DoraemonMenu
             cloneped();
             abi();
             gravity();
+            inv();
+            less();
+            autoclean();
+            respawn();
         }
 
         void SetupWeaponFunctions()
@@ -314,6 +356,89 @@ namespace DoraemonMenu
                     {
                         Game.Player.IgnoredByPolice = false;
                         ignorep.Text = "Cops don't shoot: " + false.ToString();
+                    }
+                }
+            };
+        }
+
+        bool invon = false;
+        void inv() // wtf am I doing 
+        {
+            UIMenuItem inv = new UIMenuItem("Invisible: " + invon.ToString());
+            playerMenu.AddItem(inv);
+
+
+            playerMenu.OnItemSelect += (sender, item, index) =>
+            {
+                if (item == inv)
+                {
+                    invon = !invon;
+
+                    if (invon)
+                    {
+                        Game.Player.Character.IsVisible = false;
+                        inv.Text = "Invisible: " + true.ToString();
+                    }
+                    else
+                    {
+                        Game.Player.Character.IsVisible = true;
+                        inv.Text = "Invisible: " + false.ToString();
+                    }
+                }
+            };
+        }
+
+        bool seatbelton = false;
+        void seatbelt() // wtf am I doing 
+        {
+            UIMenuItem seatbelt = new UIMenuItem("Seatbelt: " + seatbelton.ToString());
+            vehicleMenu.AddItem(seatbelt);
+
+
+            vehicleMenu.OnItemSelect += (sender, item, index) =>
+            {
+                if (item == seatbelt)
+                {
+                    seatbelton = !seatbelton;
+
+                    if (seatbelton)
+                    {
+                        Game.Player.Character.SetConfigFlag(32, false);
+                        Game.Player.Character.CanBeKnockedOffBike = false;
+                        seatbelt.Text = "Seatbelt: " + true.ToString();
+                    }
+                    else
+                    {
+                        Game.Player.Character.SetConfigFlag(32, true);
+                        Game.Player.Character.CanBeKnockedOffBike = true;
+                        seatbelt.Text = "Seatbelt: " + false.ToString();
+                    }
+                }
+            };
+        }
+
+        bool lesson = false;
+        void less() // why would you want this if you have god mode?
+        {
+            UIMenuItem less = new UIMenuItem("Take Less Damage: " + lesson.ToString());
+            playerMenu.AddItem(less);
+
+
+            playerMenu.OnItemSelect += (sender, item, index) =>
+            {
+                if (item == less)
+                {
+                    lesson = !lesson;
+
+                    if (lesson)
+                    {
+                        Game.Player.Character.CanSufferCriticalHits = false;
+                        less.Text = "Take Less Damage: " + true.ToString();
+                    }
+                    else
+                    {
+                        Game.Player.Character.CanSufferCriticalHits = true;
+                        less.Text = "Take Less Damage: " + false.ToString();
                     }
                 }
             };
@@ -360,6 +485,7 @@ namespace DoraemonMenu
                 if (item == money)
                 {
                     Game.Player.Money = 999999999;
+                    Game.Player.Character.Money = 999999999;
                 }
             };
         }
@@ -394,12 +520,36 @@ namespace DoraemonMenu
                 if (bikeon)
                 {
                     Game.Player.Character.CanBeKnockedOffBike = false;
-                    bike.Text = "Can't be knocked off bike " + true.ToString();
+                    bike.Text = "Can't be knocked off bike: " + true.ToString();
                 }
                 else
                 {
                     Game.Player.Character.CanBeKnockedOffBike = true;
-                    bike.Text = "Can't be knocked off bike " + false.ToString();
+                    bike.Text = "Can't be knocked off bike: " + false.ToString();
+                }
+            };
+        }
+
+        bool radaron = false;
+        void radar() // sus
+        {
+            UIMenuItem radar = new UIMenuItem("Hide Radar: " + radaron.ToString());
+            gameMenu.AddItem(radar);
+
+
+            gameMenu.OnItemSelect += (sender, item, index) =>
+            {
+                radaron = !radaron;
+
+                if (radaron)
+                {
+                    GTA.UI.Hud.IsRadarVisible = false;
+                    radar.Text = "Hide Radar: " + true.ToString();
+                }
+                else
+                {
+                    GTA.UI.Hud.IsRadarVisible = true;
+                    radar.Text = "Hide Radar: " + false.ToString();
                 }
             };
         }
@@ -455,6 +605,31 @@ namespace DoraemonMenu
             };
         }
 
+        bool autocleanon = false;
+        void autoclean() // wtf am I doing 
+        {
+            UIMenuItem autoclean = new UIMenuItem("Auto Clean: " + autocleanon.ToString());
+            playerMenu.AddItem(autoclean);
+
+
+            playerMenu.OnItemSelect += (sender, item, index) =>
+            {
+                if (item == autoclean)
+                {
+                    autocleanon = !autocleanon;
+
+                    if (autocleanon)
+                    {
+                        autoclean.Text = "Auto Clean: " + true.ToString();
+                    }
+                    else
+                    {
+                        autoclean.Text = "Auto Clean: " + false.ToString();
+                    }
+                }
+            };
+        }
+
         void WeaponSelectorMenu()
         {
             UIMenu submenu = modMenuPool.AddSubMenu(weaponsMenu, "Weapon Selector Menu");
@@ -504,6 +679,30 @@ namespace DoraemonMenu
                     {
                         Game.Player.Character.CanRagdoll = true;
                         noragdoll.Text = "No Ragdoll: " + false.ToString();
+                    }
+                }
+            };
+        }
+
+        bool bypasson = false;
+        void bypass()
+        {
+            UIMenuItem bypass = new UIMenuItem("Bypass Max Vehicle Speed: " + bypasson.ToString());
+            vehicleMenu.AddItem(bypass);
+
+            vehicleMenu.OnItemSelect += (sender, item, index) =>
+            {
+                if (item == bypass)
+                {
+                    bypasson = !bypasson;
+
+                    if (bypasson)
+                    {
+                        bypass.Text = "Bypass Max Vehicle Speed: " + true.ToString();
+                    }
+                    else
+                    {
+                        bypass.Text = "Bypass Max Vehicle Speed: " + false.ToString();
                     }
                 }
             };
@@ -814,6 +1013,62 @@ namespace DoraemonMenu
             };
         }
 
+        bool barkon = false;
+        void bark()
+        {
+            UIMenuItem bark = new UIMenuItem("Disable Dog Barking: " + barkon.ToString());
+
+            gameMenu.AddItem(bark);
+
+            gameMenu.OnItemSelect += (sender, item, index) =>
+            {
+                if (item == bark)
+                {
+                    barkon = !barkon;
+
+                    if (barkon)
+                    {
+                        Audio.SetAudioFlag(AudioFlags.DisableBarks, true);
+                        bark.Text = "Disable Dog Barking: " + true.ToString(); //brackets is the way for this to be fixed
+                    }
+                    else
+                    {
+                        Audio.SetAudioFlag(AudioFlags.DisableBarks, false);
+                        bark.Text = "Disable Dog Barking: " + false.ToString();
+                    }
+
+                }
+            };
+        }
+
+        bool scubaon = false;
+        void scuba()
+        {
+            UIMenuItem scuba = new UIMenuItem("Scuba Breathing Audio: " + scubaon.ToString());
+
+            gameMenu.AddItem(scuba);
+
+            gameMenu.OnItemSelect += (sender, item, index) =>
+            {
+                if (item == scuba)
+                {
+                    scubaon = !scubaon;
+
+                    if (scubaon)
+                    {
+                        Audio.SetAudioFlag(AudioFlags.SuppressPlayerScubaBreathing, true);
+                        scuba.Text = "Scuba Breathing Audio: " + true.ToString(); //brackets is the way for this to be fixed
+                    }
+                    else
+                    {
+                        Audio.SetAudioFlag(AudioFlags.SuppressPlayerScubaBreathing, false);
+                        scuba.Text = "Scuba Breathing Audio: " + false.ToString();
+                    }
+
+                }
+            };
+        }
+
         void maxwanted() // this code will prob break anyways, but hey, atleast I tried!
         {
 
@@ -882,6 +1137,66 @@ namespace DoraemonMenu
             };
         }
 
+        bool godmodealton = false;
+        void godmodealt()
+        {
+            UIMenuItem godmodealt = new UIMenuItem("God Mode V2: " + godmodealton.ToString()); // trying something new
+
+            playerMenu.AddItem(godmodealt);
+
+            playerMenu.OnItemSelect += (sender, item, index) =>
+            {
+                if (item == godmodealt)
+                {
+                    godmodealton = !godmodealton;
+
+                    if (godmodealton)
+                    {
+                        Game.Player.IsInvincible = true;
+                        Game.Player.Character.IsInvincible = true;
+
+                        godmodealt.Text = "God Mode V2: " + true.ToString();
+                    }
+                    else
+                    {
+                        Game.Player.IsInvincible = false;
+                        Game.Player.Character.IsInvincible = false;
+
+                        godmodealt.Text = "God Mode V2: " + false.ToString();
+                    }
+                }
+            };
+        }
+
+        bool vehgodmodeon = false;
+        void vehgodmode()
+        {
+            UIMenuItem vehgodmode = new UIMenuItem("Vehicle God Mode: " + vehgodmodeon.ToString());
+
+            vehicleMenu.AddItem(vehgodmode);
+
+            vehicleMenu.OnItemSelect += (sender, item, index) =>
+            {
+                if (item == vehgodmode)
+                {
+                    vehgodmodeon = !vehgodmodeon;
+
+                    if (vehgodmodeon)
+                    {
+                        Game.Player.Character.CurrentVehicle.IsInvincible = true;
+
+                        vehgodmode.Text = "God Mode: " + true.ToString();
+                    }
+                    else
+                    {
+                        Game.Player.Character.CurrentVehicle.IsInvincible = false;
+
+                        vehgodmode.Text = "God Mode: " + false.ToString();
+                    }
+                }
+            };
+        }
+
         bool superrunon = false;
         void superrun()
         {
@@ -924,6 +1239,50 @@ namespace DoraemonMenu
                         neverWanted.Text = "Never Wanted: " + true.ToString();
                     else
                         neverWanted.Text = "Never Wanted: " + false.ToString();
+
+                }
+            };
+        }
+
+        bool respawnon = false;
+        void respawn()
+        {
+            UIMenuItem respawn = new UIMenuItem("Fast Respawn: " + respawnon.ToString());
+
+            playerMenu.AddItem(respawn);
+
+            playerMenu.OnItemSelect += (sender, item, index) =>
+            {
+                if (item == respawn)
+                {
+                    respawnon = !respawnon;
+
+                    if (respawnon)
+                        respawn.Text = "Fast Respawn: " + true.ToString();
+                    else
+                        respawn.Text = "Fast Respawn: " + false.ToString();
+
+                }
+            };
+        }
+
+        bool vehautocleanon = false;
+        void vehautoclean()
+        {
+            UIMenuItem vehautoclean = new UIMenuItem("Vehicle Auto Clean: " + vehautocleanon.ToString());
+
+            vehicleMenu.AddItem(vehautoclean);
+
+            vehicleMenu.OnItemSelect += (sender, item, index) =>
+            {
+                if (item == vehautoclean)
+                {
+                    vehautocleanon = !vehautocleanon;
+
+                    if (vehautocleanon)
+                        vehautoclean.Text = "Vehicle Auto Clean: " + true.ToString();
+                    else
+                        vehautoclean.Text = "Vehicle Auto Clean: " + false.ToString();
 
                 }
             };
@@ -1012,6 +1371,30 @@ namespace DoraemonMenu
             if (gravityon)
             {
                 Game.Player.Character.HasGravity = false;
+            }
+            if (bypasson)
+            {
+                Game.Player.Character.MaxDrivingSpeed = 999999999;
+            }
+            if (autocleanon)
+            {
+                Game.Player.Character.ClearBloodDamage();
+                Game.Player.Character.ClearVisibleDamage();
+            }
+            if (vehautocleanon)
+            {
+                Game.Player.Character.CurrentVehicle.Wash();
+            }
+            if (respawnon)
+            {
+                if (Game.Player.Character.IsDead)
+                {
+                    Game.Player.Character.Resurrect();
+                }
+            }
+            if (godmodealton)
+            {
+                Game.Player.Character.Armor = Game.Player.MaxArmor;
             }
         }
 
