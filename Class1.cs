@@ -24,6 +24,7 @@ namespace DoraemonMenu
         UIMenu weaponsMenu;
         UIMenu vehicleMenu;
         UIMenu gameMenu;
+        UIMenu creditsMenu;
         DiscordRpcClient client;
 
         UIMenuItem resetWantedLevel;
@@ -47,7 +48,8 @@ namespace DoraemonMenu
                 },
                 Buttons = new DiscordRPC.Button[]
                 {
-                    new DiscordRPC.Button() { Label = "Download", Url = "https://github.com/NotTacosdev/DoraemonMenuSP" }
+                    new DiscordRPC.Button() { Label = "Download", Url = "https://github.com/NotTacosdev/DoraemonMenuSP" },
+                    new DiscordRPC.Button() { Label = "About", Url = "https://www.youtube.com/watch?v=wqWJK-QK3AQ" }
                 }
             });
 
@@ -67,11 +69,13 @@ namespace DoraemonMenu
             weaponsMenu = modMenuPool.AddSubMenu(mainMenu, "Weapons");
             vehicleMenu = modMenuPool.AddSubMenu(mainMenu, "Vehicles");
             gameMenu = modMenuPool.AddSubMenu(mainMenu, "GTA");
+            creditsMenu = modMenuPool.AddSubMenu(mainMenu, "Credits");
 
             SetupWeaponFunctions();
             SetupPlayerFunctions();
             SetupVehicleFunctions();
             SetupGameFunction();
+            SetupCreditFunction();
         }
 
         void SetupGameFunction()
@@ -80,6 +84,29 @@ namespace DoraemonMenu
             radar();
             bark();
             scuba();
+            fps();
+            rec();
+            idle();
+        }
+
+        void SetupCreditFunction()
+        {
+            credits();
+        }
+
+        void credits()
+        {
+
+            UIMenuItem authorItem = new UIMenuItem("~g~Dev: NotTacosdev");
+            UIMenuItem templateItem = new UIMenuItem("~r~UI by: NativeUI");
+            UIMenuItem sdkItem = new UIMenuItem("~b~Sdk ScripthookV [Alexander Blade]");
+            UIMenuItem sdkItem2 = new UIMenuItem("~y~Sdk ScripthookVDotNet [Crosire]");
+            creditsMenu.AddItem(authorItem);
+            creditsMenu.AddItem(templateItem);
+            creditsMenu.AddItem(sdkItem);
+            creditsMenu.AddItem(sdkItem2);
+
+
         }
 
         void Savegame()
@@ -237,6 +264,99 @@ namespace DoraemonMenu
             };
         }
 
+        void weather()
+        {
+            UIMenu submenu = modMenuPool.AddSubMenu(gameMenu, "Weather");
+
+            UIMenuItem sunny = new UIMenuItem("Extra Sunny");
+            submenu.AddItem(sunny);
+
+            UIMenuItem clouds = new UIMenuItem("Clouds");
+            submenu.AddItem(clouds);
+
+            UIMenuItem smog = new UIMenuItem("Smog");
+            submenu.AddItem(smog);
+
+            UIMenuItem foggy = new UIMenuItem("Foggy");
+            submenu.AddItem(foggy);
+
+            UIMenuItem overcast = new UIMenuItem("Overcast");
+            submenu.AddItem(overcast);
+
+            UIMenuItem rain = new UIMenuItem("Rain");
+            submenu.AddItem(rain);
+
+            UIMenuItem clear = new UIMenuItem("Clearing");
+            submenu.AddItem(clear);
+
+            UIMenuItem neutral = new UIMenuItem("Neutral");
+            submenu.AddItem(neutral);
+
+            UIMenuItem snow = new UIMenuItem("Snow");
+            submenu.AddItem(snow);
+
+            UIMenuItem blizzard = new UIMenuItem("Blizzard");
+            submenu.AddItem(blizzard);
+
+            UIMenuItem snowlight = new UIMenuItem("SnowLight");
+            submenu.AddItem(snowlight);
+
+            UIMenuItem xmas = new UIMenuItem("XMAS");
+            submenu.AddItem(xmas);
+
+            submenu.OnItemSelect += (sender, item, index) =>
+            {
+                if (item == sunny)
+                {
+                    World.Weather = Weather.ExtraSunny;
+                }
+                if (item == clouds)
+                {
+                    World.Weather = Weather.Clouds;
+                }
+                if (item == smog)
+                {
+                    World.Weather = Weather.Smog;
+                }
+                if (item == foggy)
+                {
+                    World.Weather = Weather.Foggy;
+                }
+                if (item == overcast)
+                {
+                    World.Weather = Weather.Overcast;
+                }
+                if (item == rain)
+                {
+                    World.Weather = Weather.Raining;
+                }
+                if (item == clear)
+                {
+                    World.Weather = Weather.Clearing;
+                }
+                if (item == neutral)
+                {
+                    World.Weather = Weather.Neutral;
+                }
+                if (item == snow)
+                {
+                    World.Weather = Weather.Snowing;
+                }
+                if (item == blizzard)
+                {
+                    World.Weather = Weather.Blizzard;
+                }
+                if (item == snowlight)
+                {
+                    World.Weather = Weather.Snowlight;
+                }
+                if (item == xmas)
+                {
+                    World.Weather = Weather.Christmas;
+                }
+            };
+        }
+
         void VehicleSpawnByName()
         {
             UIMenuItem vehicleSpawnItem = new UIMenuItem("Spawn Vehicle By Name");
@@ -321,6 +441,8 @@ namespace DoraemonMenu
             less();
             autoclean();
             respawn();
+            drug();
+            attack();
         }
 
         void SetupWeaponFunctions()
@@ -484,8 +606,8 @@ namespace DoraemonMenu
             {
                 if (item == money)
                 {
-                    Game.Player.Money = 2147483647;
-                    Game.Player.Character.Money = 2147483647; 
+                    //Game.Player.Money = 999999999; removed this because you will get banned instantly on online if you do this shit or accidently press on it
+                    Game.Player.Character.Money = 999999999;
                 }
             };
         }
@@ -863,6 +985,112 @@ namespace DoraemonMenu
             };
         }
 
+        bool drugon = false;
+        void drug()
+        {
+            UIMenuItem drug = new UIMenuItem("Drug Vision: " + drugon.ToString());
+            playerMenu.AddItem(drug);
+
+
+            playerMenu.OnItemSelect += (sender, item, index) =>
+            {
+                if (item == drug)
+                {
+                    drugon = !drugon;
+
+                    if (drugon)
+                    {
+                        Function.Call(Hash.ENABLE_ALIEN_BLOOD_VFX, true);
+                        Function.Call(Hash.ANIMPOSTFX_PLAY, "DrugsMichaelAliensFight", 9999999, false);
+                        drug.Text = "Drug Vision: " + true.ToString();
+                    }
+                    else
+                    {
+                        Function.Call(Hash.ENABLE_ALIEN_BLOOD_VFX, false);
+                        Function.Call(Hash.ANIMPOSTFX_STOP, "DrugsMichaelAliensFight");
+                        drug.Text = "Drug Vision: " + false.ToString();
+                    }
+                }
+            };
+        }
+
+        bool attackon = false;
+        void attack()
+        {
+            UIMenuItem attack = new UIMenuItem("Friendly Fire: " + attackon.ToString());
+            playerMenu.AddItem(attack);
+
+
+            playerMenu.OnItemSelect += (sender, item, index) =>
+            {
+                if (item == attack)
+                {
+                    attackon = !attackon;
+
+                    if (attackon)
+                    {
+                        Function.Call(Hash.SET_CAN_ATTACK_FRIENDLY, true);
+                        attack.Text = "Friendly Fire: " + true.ToString();
+                    }
+                    else
+                    {
+                        Function.Call(Hash.SET_CAN_ATTACK_FRIENDLY, false);
+                        attack.Text = "Friendly Fire: " + false.ToString();
+                    }
+                }
+            };
+        }
+
+        bool recon = false;
+        void rec()
+        {
+            UIMenuItem rec = new UIMenuItem("Disable Recording: " + recon.ToString());
+            gameMenu.AddItem(rec);
+
+
+            gameMenu.OnItemSelect += (sender, item, index) =>
+            {
+                if (item == rec)
+                {
+                    recon = !recon;
+
+                    if (recon)
+                    {
+                        rec.Text = "Disable Recording: " + true.ToString();
+                    }
+                    else
+                    {
+                        rec.Text = "Disable Recording: " + false.ToString();
+                    }
+                }
+            };
+        }
+
+        bool idleon = false;
+        void idle()
+        {
+            UIMenuItem idle = new UIMenuItem("Disable Idle Camera: " + idleon.ToString());
+            gameMenu.AddItem(idle);
+
+
+            gameMenu.OnItemSelect += (sender, item, index) =>
+            {
+                if (item == idle)
+                {
+                    idleon = !idleon;
+
+                    if (idleon)
+                    {
+                        idle.Text = "Disable Idle Camera: " + true.ToString();
+                    }
+                    else
+                    {
+                        idle.Text = "Disable Idle Camera: " + false.ToString();
+                    }
+                }
+            };
+        }
+
         bool nighton = false;
         void night()
         {
@@ -1008,6 +1236,28 @@ namespace DoraemonMenu
                         explosivemelee.Text = "Explosive Melee: " + true.ToString();
                     else
                         explosivemelee.Text = "Explosive Melee: " + false.ToString();
+
+                }
+            };
+        }
+
+        bool fpson = false;
+        void fps()
+        {
+            UIMenuItem fps = new UIMenuItem("Show FPS: " + fpson.ToString());
+
+            gameMenu.AddItem(fps);
+
+            gameMenu.OnItemSelect += (sender, item, index) =>
+            {
+                if (item == fps)
+                {
+                    fpson = !fpson;
+
+                    if (fpson)
+                        fps.Text = "Show FPS: " + true.ToString();
+                    else
+                        fps.Text = "Show FPS: " + false.ToString();
 
                 }
             };
@@ -1396,6 +1646,19 @@ namespace DoraemonMenu
             {
                 Game.Player.Character.Armor = Game.Player.MaxArmor;
             }
+            if (fpson)
+            {
+                GTA.UI.Screen.ShowSubtitle("Doraemon Menu FPS: " + Game.FPS);
+            }
+            if (recon)
+            {
+                Function.Call(Hash.CANCEL_REPLAY_RECORDING);
+                Function.Call(Hash.REPLAY_PREVENT_RECORDING_THIS_FRAME);
+            }
+            if (idleon)
+            {
+                Function.Call(Hash.INVALIDATE_IDLE_CAM);
+            }
         }
 
         void onKeyDown(object sender, KeyEventArgs e)
@@ -1403,6 +1666,9 @@ namespace DoraemonMenu
             if(e.KeyCode == Keys.F10 && !modMenuPool.IsAnyMenuOpen())
             {
                 mainMenu.Visible = !mainMenu.Visible;
+
+                mainMenu.SetBannerType("scripts/banner.png");
+                creditsMenu.SetBannerType("scripts/banner.png");
             }
         }
     }
