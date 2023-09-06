@@ -80,6 +80,7 @@ namespace DoraemonMenu
 
         void SetupGameFunction()
         {
+            weather();
             Savegame();
             radar();
             bark();
@@ -289,6 +290,9 @@ namespace DoraemonMenu
             UIMenuItem clear = new UIMenuItem("Clearing");
             submenu.AddItem(clear);
 
+            UIMenuItem thunder = new UIMenuItem("Thunder");
+            submenu.AddItem(thunder);
+
             UIMenuItem neutral = new UIMenuItem("Neutral");
             submenu.AddItem(neutral);
 
@@ -303,6 +307,9 @@ namespace DoraemonMenu
 
             UIMenuItem xmas = new UIMenuItem("XMAS");
             submenu.AddItem(xmas);
+
+            UIMenuItem halloween = new UIMenuItem("Halloween");
+            submenu.AddItem(halloween);
 
             submenu.OnItemSelect += (sender, item, index) =>
             {
@@ -353,6 +360,14 @@ namespace DoraemonMenu
                 if (item == xmas)
                 {
                     World.Weather = Weather.Christmas;
+                }
+                if (item == thunder)
+                {
+                    World.Weather = Weather.ThunderStorm;
+                }
+                if (item == halloween)
+                {
+                    World.Weather = Weather.Halloween;
                 }
             };
         }
