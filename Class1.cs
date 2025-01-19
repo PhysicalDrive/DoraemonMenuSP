@@ -48,7 +48,7 @@ namespace DoraemonMenu
                 },
                 Buttons = new DiscordRPC.Button[]
                 {
-                    new DiscordRPC.Button() { Label = "Download", Url = "https://github.com/NotTacosdev/DoraemonMenuSP" },
+                    new DiscordRPC.Button() { Label = "Download", Url = "https://github.com/PhysicalDrive/DoraemonMenuSP" },
                     new DiscordRPC.Button() { Label = "About", Url = "https://www.youtube.com/watch?v=wqWJK-QK3AQ" }
                 }
             });
