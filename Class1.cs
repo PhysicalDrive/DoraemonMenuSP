@@ -1684,6 +1684,10 @@ namespace DoraemonMenu
 
                 mainMenu.SetBannerType("scripts/banner.png");
                 creditsMenu.SetBannerType("scripts/banner.png");
+                weaponsMenu.SetBannerType("scripts/banner.png");
+                vehicleMenu.SetBannerType("scripts/banner.png");
+                gameMenu.SetBannerType("scripts/banner.png");
+                playerMenu.SetBannerType("scripts/banner.png");
             }
         }
     }
